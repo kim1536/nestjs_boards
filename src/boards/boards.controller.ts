@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Patch, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Board, BoardStatus } from './boards.model';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { BoardStatusValidationPipe } from './pipes/board-status-validarion-pipe';
 
 @Controller('boards')
 export class BoardsController {
@@ -18,6 +19,7 @@ export class BoardsController {
     }
 
     @Post()
+    @UsePipes(ValidationPipe) // 핸들러 레벨에서 유효성 검사
     createBoard(@Body() createBoardDto: CreateBoardDto): Board {
         return this.boardsService.createBoard(createBoardDto)
     }
@@ -28,7 +30,7 @@ export class BoardsController {
     }
 
     @Patch('/:id/status')
-    updateBoardStatus(@Param('id') id: string, @Body('status') status: BoardStatus) {
+    updateBoardStatus(@Param('id') id: string, @Body('status', BoardStatusValidationPipe) status: BoardStatus) {
         return this.boardsService.updateBoardStatus(id, status);
     };
 }
