@@ -5,6 +5,7 @@ import { TypeOrmExModule } from 'src/decorator/typeorm-ex.module';
 import { UserRepository } from './user.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JetStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmExModule.forCustomRepository([UserRepository]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JetStrategy],
+  exports: [JetStrategy, PassportModule]
 })
 export class AuthModule {}
