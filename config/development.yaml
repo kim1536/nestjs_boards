@@ -1,0 +1,8 @@
+db:
+  host: 'localhost'
+  username: 'admin'
+  password: 'nestjs'
+  synchronize: true
+
+jwt: 
+  secret: 'test1234'

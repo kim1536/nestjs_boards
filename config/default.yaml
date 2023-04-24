@@ -1,0 +1,10 @@
+server:
+  port: 3000
+
+bd: 
+  type: 'mysql'
+  port: 3306
+  database: 'nestjsDB'
+
+jwt:
+  expiresIn: 3600

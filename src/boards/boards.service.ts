@@ -4,6 +4,7 @@ import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -14,8 +15,20 @@ export class BoardsService {
   //     return this.boards
   // }
 
-  async getAllBoards(): Promise<Array<Board>> {
-    return await this.boardRepository.find();
+  //모든 개시글을 가젹온다
+  // async getAllBoards(): Promise<Array<Board>> {
+  //   return await this.boardRepository.find();
+  // }
+
+  // 특정 유저가 작성한 개시글만 가져온다
+  async getAllBoards(
+    user: User
+  ): Promise<Array<Board>> {
+    const query = this.boardRepository.createQueryBuilder('board');
+    query.where('board.userId = :userId', {userId: user.id})
+
+    const boards = await query.getMany()
+    return boards;
   }
 
   // createBoard(createBoardDto: CreateBoardDto) {
@@ -31,8 +44,8 @@ export class BoardsService {
   //     return board;
   // }
 
-  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
-    return await this.boardRepository.createBoard(createBoardDto);
+  async createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+    return await this.boardRepository.createBoard(createBoardDto, user);
   }
 
   // getBoardById(id: string): Board {
@@ -56,8 +69,9 @@ export class BoardsService {
   //     this.boards = this.boards.filter((board)=> board.id !== found.id);
   // }
 
-  async deleteBoard(id: number): Promise<void> {
-    const result = await this.boardRepository.delete(id);
+  async deleteBoard(id: number, user: User): Promise<void> {
+    const result = await this.boardRepository.delete({id, user:{id:user.id}});
+
     if (result.affected === 0) {
       throw new NotFoundException(`Can't find Borad with id ${id}`);
     }

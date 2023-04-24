@@ -17,5 +17,6 @@ services:
       - '--collation-server=utf8mb4_unicode_ci'
     volumes: 
       - "./db:/var/lib/mysql"
+      - "./db:/var/lib/nestjsDB"
     env_file:
       - .env

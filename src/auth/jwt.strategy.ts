@@ -3,17 +3,20 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { UserRepository } from './user.repository';
 import { User } from "./user.entity";
+import * as config from 'config';
+
+const jwtConfig = config.get('jwt');
 
 @Injectable()
 export class JetStrategy extends PassportStrategy(Strategy) {
     constructor(private userRepository:UserRepository){
         super({
-            secretOrKey:'test1234',
+            secretOrKey:jwtConfig.secret,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
         })
     }
 
-    async validare(payload){
+    async validate(payload){
         const { username } = payload;
         const user: User = await this.userRepository.findOneBy({username});
 
